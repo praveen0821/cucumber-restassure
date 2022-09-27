@@ -1,12 +1,12 @@
 package com.cucumber.restassure.definitions;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import org.assertj.core.api.Assertions;
 
 import java.util.HashMap;
@@ -31,18 +31,26 @@ public class StepDefsHelloTest {
                 .contentType(ContentType.TEXT)
                 //.body(map)
                 .when()
-                .get()
-                .then()
-                .statusCode(200).contentType(ContentType.TEXT).
-                extract().response();
+                .get();
+//                .then()
+//                .statusCode(200).contentType(ContentType.TEXT).
+//                .extract().response();
         System.out.println("Baeldung: " + response.statusCode());
         Assertions.assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @Then("the client receives server version baeldung")
     public void the_client_receives_server_baeldung() {
-        System.out.println("HelloVersion: " + response.getStatusLine());
-        Assertions.assertThat(response.getBody().asString()).isEqualTo("baeldung");
+        Address address = new Address();
+        address.setDoorNo("169");
+        address.setCity("Bangalore");
+        address.setState("Karnataka");
+        address.setCountry("India");
+        address.setPincode(560077L);
+        ResponseBody responseBody = response.getBody();
+        Address res = responseBody.as(Address.class);
+        System.out.println("BaeldungVersion: " + res);
+        Assertions.assertThat(res.toString()).isEqualTo(address.toString());
     }
 
     @Given("the client calls \\/hello")
@@ -59,15 +67,15 @@ public class StepDefsHelloTest {
                 .when()
                 .get()
                 .then()
-                .statusCode(200).contentType(ContentType.TEXT).
-                extract().response();
+//                .statusCode(200).contentType(ContentType.TEXT).
+                .extract().response();
         System.out.println("Hello: " + response.statusCode());
         Assertions.assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @Then("the client receives hello version hello")
     public void the_client_receives_server_hello() {
-        System.out.println("HelloVersion: " + response.getStatusLine());
+        System.out.println("HelloVersion: " + response.getBody().asString());
         Assertions.assertThat(response.getBody().asString()).isEqualTo("hello");
     }
 
